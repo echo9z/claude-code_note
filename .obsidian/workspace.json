@@ -1,0 +1,190 @@
+{
+  "main": {
+    "id": "d8f8f244b1fb5d85",
+    "type": "split",
+    "children": [
+      {
+        "id": "ad68e3a850d01fcb",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3ecc97da31f1bfc6",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "claude code lean.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "claude code lean"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "d975b75bf9fc225d",
+    "type": "split",
+    "children": [
+      {
+        "id": "9b8147bb8391c3fd",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "98d03fffae7c4efd",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "4fcb9a2eae701b0f",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "569ee400f8643eee",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 286.5
+  },
+  "right": {
+    "id": "214ae60f0cce5cfd",
+    "type": "split",
+    "children": [
+      {
+        "id": "8679f5d2ef86dc16",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "cd2381cf967d16b7",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "claude code lean.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": true,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "claude code lean 的反向链接列表"
+            }
+          },
+          {
+            "id": "84105ae74985cc77",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "claude code lean.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "claude code lean 的出链列表"
+            }
+          },
+          {
+            "id": "ef728f9ade7e84d0",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "1418a2912db3f742",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "claude code lean.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "claude code lean 的大纲"
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:创建新数据库": false
+    }
+  },
+  "active": "3ecc97da31f1bfc6",
+  "lastOpenFiles": [
+    "cla.asstes/per1.png",
+    "claude code lean.md",
+    "cla.asstes/per2.png",
+    "cla.asstes/per5.png",
+    "cla.asstes/per4.png",
+    "cla.asstes/per3.png",
+    "CLAUDE.md",
+    "cla.asstes/ide2.png",
+    "cla.asstes/ide1.png",
+    "cla.asstes/ide.png",
+    "ide.png",
+    "mem.png",
+    "billing-system.html",
+    "cla.asstes",
+    "billing-system.html.tmp.17448.1757511912771"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__tavily-mcp__tavily-search",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "mcp__serena__list_dir",
+      "mcp__serena__find_file",
+      "mcp__serena__activate_project",
+      "mcp__serena__onboarding",
+      "mcp__serena__get_symbols_overview",
+      "mcp__serena__search_for_pattern",
+      "mcp__serena__list_memories",
+      "mcp__serena__check_onboarding_performed",
+      "mcp__serena__write_memory",
+      "mcp__playwright-extension__browser_navigate",
+      "mcp__playwright-extension__browser_install",
+      "mcp__playwright-extension__browser_take_screenshot",
+      "mcp__playwright-extension__browser_click",
+      "mcp__playwright-extension__browser_evaluate",
+      "mcp__playwright-extension__browser_close"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "context7",
+    "serena"
+  ]
+}
