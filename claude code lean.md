@@ -910,6 +910,6 @@ $ CCR Code --dangerously-skip-permissions
 **局限**: 仅能回退对话内容，不能回退代码改动。
 
 2.**`/export`**:
--  **功能**: 将当前对话内容复制到剪贴板。
+- **功能**: 将当前对话内容复制到剪贴板。
 - **用途**: 可将对话内容保存为文件，或粘贴给其他AI（例如chatgpt、gemini）进行交叉验证或进一步分析。
 ![](./cla.asstes/his3.png)
