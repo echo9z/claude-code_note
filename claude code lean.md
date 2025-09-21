@@ -88,15 +88,16 @@ plan mode模式，Claude Code不会进行任何代码修改只会提出自己的
 是否自动更新
 ![](./cla.asstes/config.png)
 
-自动压缩是 Claude Code 中的一个功能，当上下文超过 95%的容量时，它会自动压缩对话
+auto-compact，自动压缩是 Claude Code 中的一个功能，当上下文超过 95%的容量时，它会自动压缩对话
 
-Verbose output  false，是否显示对话输出的详细信息。如果为true，在调用任何MCP工具的时候或者说调用任何read工具、联网搜索工具都会去对这个工具的一个反馈结果进行详细输出。
-
-比如：对话框输入`使用context7查看react hook文档`，当开启的那个详细信息输出之后，它这个context7-cmp工具的一个反馈结果展现到当前的控制台中。
+Verbose output: false，是否显示对话输出的详细信息。如果为true，在调用任何MCP工具的时候或者说调用任何read工具、联网搜索工具都会去对这个工具的一个反馈结果进行详细输出。
+- 比如：对话框输入`使用context7查看react hook文档`，当开启的那个详细信息输出之后，它这个context7-cmp工具的一个反馈结果展现到当前的控制台中。
 ![](./cla.asstes/config2.png)
 
 或者使用设置全局配置，请使用 `claude config set -g <key> <value>`。
-
+```shell
+claude config set -g auto-compact true
+```
 #### 基本的mcp命令
 
 ```text
@@ -742,13 +743,68 @@ Claude Code 递归读取记忆：从当前工作目录（cwd）开始，Claude C
 使用`playwright-extension` mcp测试下生成页面，在对话框输入`使用playwright-extension测试下 @billing-system.html 这个页面`，mcp会调用本地用户chrome，你需要页面进行授权，测试完后会在当前目录下生成页面截图。
 ![](./cla.asstes/h1.png)
 
- 
-### Hooks（钩子）
+如果当前项目的代码发生变化，可以再对话框输入`更新update claude.md`，会更具当前代码更新claude.md文件。
 
-可以在 Claude 执行的不同阶段自动触发一些脚本，比如：
+### Hooks（钩子）
+claude code hooks阅读文档：[hooks](https://docs.claude.com/en/docs/claude-code/hooks-guide)
+在 Claude code执行的不同阶段自动触发一些脚本，比如：
 - 代码提交前自动跑测试
 - 实时监控代码变化并发送通知
 - 自动执行代码格式化
+
+比如在使用在写代码，经常使用prettier工具，来检测代码格式规范是否正确，比如执行`npx prettier check ./`检查当前目录下代码格式是否正确。比如在写完代码后，自动执行相关命令检测代码格式是否存在问题。
+
+对话框输入`/hooks`
+![](./cla.asstes/hook1.png)
+- **PreToolUse**：在工具调用之前运行（可以阻止它们）
+- **PostToolUse**：工具调用完成后运行
+- **UserPromptSubmit**：在用户提交提示时运行，然后 Claude 处理它
+- **Notification** ：在 Claude Code 发送通知时运行
+- **Stop**：当 Claude Code 完成响应时运行
+- **SubagentStop**：子代理任务完成时运行
+- **PreCompact**：在 Claude Code 即将运行压缩作之前运行
+- **SessionStart**：当 Claude Code 启动新会话或恢复现有会话时运行
+- **SessionEnd**：在 Claude Code 会话结束时运行
+
+选择 `+ Add new matcher…`，在执行claude内置工具时执行，具体工具参考：[tools-available-to-claude](https://docs.claude.com/en/docs/claude-code/settings#tools-available-to-claude)。
+比如：bash，仅在 Bash 工具调用时运行挂钩。
+Edit|MultiEdit|Write：在编辑，对单个文件执行多次编辑，创建或覆盖写入文件工具运行挂钩。
+![](./cla.asstes/hook2.png)
+
+再选择` + Add new hook…`，然后输入执行命令：
+```shell
+npx prettier --check
+```
+![](./cla.asstes/hook3.png)
+
+保持配置为当前项目目录：
+![](./cla.asstes/hook4.png)
+
+`/hooks` 或再`~/.claude/settings.json`中查看配置：
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx prettier --check"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+**配置文件**: 项目目录下`.cloud/settings.json` 或优先级更高的 `.cloud/settings.local.json`
+- **配置示例**:
+	- **定义时机**: `hooks` 中定义执行时机，例如`PostToolUse`（工具调用完成后）。
+	- **匹配器 (`Matcher`)**: 指定触发钩子的工具类型，例如文件修改工具。
+	- **命令内容**: 定义要执行的命令，例如运行`npx prettier check`来检查代码格式。  
+  **工作流程**: AI修改代码后，钩子立即触发代码格式检查，若发现错误，Claude Code会自动修复。
+  **触发事件**: Claude Code官方文档列举了多种[触发事件](https://docs.claude.com/en/docs/claude-code/hooks-guide#hook-events-overview)，可用于配置更多辅助开发的功能。
 
 ## 小记
 
@@ -842,3 +898,18 @@ $ CCR Code --dangerously-skip-permissions
 帮我git提交当前项目下的所有内容，完成暂存区，提交commit操作，提交描述为$ARGUMENTS
 ```
 使用 `$arguments` 作为传入参数的占位符，在使用自定义命令时进行参入参数。
+自定义命令就在对话框输入`/git_commit claude code notes`，空格后传入的参数
+![](./cla.asstes/per6.png)
+
+#### 6.历史对话与状态管理
+
+1.**`/resume`**：查找并回溯之前的历史话题。
+![](./cla.asstes/his1.png)
+选择历史话题后，按两下`ESC`键可跳转到具体对话列表，箭头选择具体某句话之前，进行继续对话。这是一个找回历史对话记录的好办法。
+![](./cla.asstes/his2.png)
+**局限**: 仅能回退对话内容，不能回退代码改动。
+
+2.**`/export`**:
+-  **功能**: 将当前对话内容复制到剪贴板。
+- **用途**: 可将对话内容保存为文件，或粘贴给其他AI（例如chatgpt、gemini）进行交叉验证或进一步分析。
+![](./cla.asstes/his3.png)

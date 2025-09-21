@@ -25,5 +25,18 @@
   "enabledMcpjsonServers": [
     "context7",
     "serena"
-  ]
+  ],
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx prettier --check"
+          }
+        ]
+      }
+    ]
+  }
 }

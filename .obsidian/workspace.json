@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "ad68e3a850d01fcb",
+        "id": "e4ad08d0713fdb18",
         "type": "tabs",
         "children": [
           {
-            "id": "3ecc97da31f1bfc6",
+            "id": "e068c5725456f694",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -169,20 +169,21 @@
       "bases:创建新数据库": false
     }
   },
-  "active": "3ecc97da31f1bfc6",
+  "active": "e068c5725456f694",
   "lastOpenFiles": [
-    "cla.asstes/per1.png",
+    "daily.png",
     "claude code lean.md",
-    "cla.asstes/per2.png",
-    "cla.asstes/per5.png",
-    "cla.asstes/per4.png",
-    "cla.asstes/per3.png",
+    "Pasted image 20250922011634.png",
+    "cla.asstes/his1.png",
+    "cla.asstes/his3.png",
+    "cla.asstes/his2.png",
+    "Pasted image 20250922011446.png",
+    "cla.asstes/hook1.png",
+    "cla.asstes/hook3.png",
+    "cla.asstes/hook2.png",
+    "cla.asstes/hook4.png",
+    "cla.asstes/per6.png",
     "CLAUDE.md",
-    "cla.asstes/ide2.png",
-    "cla.asstes/ide1.png",
-    "cla.asstes/ide.png",
-    "ide.png",
-    "mem.png",
     "billing-system.html",
     "cla.asstes",
     "billing-system.html.tmp.17448.1757511912771"
