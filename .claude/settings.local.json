@@ -18,7 +18,9 @@
       "mcp__playwright-extension__browser_take_screenshot",
       "mcp__playwright-extension__browser_click",
       "mcp__playwright-extension__browser_evaluate",
-      "mcp__playwright-extension__browser_close"
+      "mcp__playwright-extension__browser_close",
+      "Bash(node:*)",
+      "Read(//c/Users/11312/.claude/**)"
     ]
   },
   "enableAllProjectMcpServers": true,
@@ -38,5 +40,6 @@
         ]
       }
     ]
-  }
+  },
+  "outputStyle": "default"
 }

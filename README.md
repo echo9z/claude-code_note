@@ -1,9 +1,7 @@
-claude code学习笔记
-
 ## Claude code快速上手
 
 Claude code 阅读文档：[ Anthropic Overview](https://docs.anthropic.com/en/docs/claude-code/overview)
-代理编码的最佳实践：[claude-code-best-practices](https://www.anthropic.com/engineering/claude-code-best-practices)
+官方代理编码的最佳实践：[claude-code-best-practices](https://www.anthropic.com/engineering/claude-code-best-practices)
 ### 安装
 
 文档运行环境需要：Win11，Powershell、Git 2.48+、Node20+、uv8.0+
@@ -17,16 +15,49 @@ npm install -g @anthropic-ai/claude-code
 其他环境参考官方文档：[快速入门 - Anthropic Quickstart](https://docs.anthropic.com/en/docs/claude-code/quickstart)
 
 ### 常用命令
-
+Claude code：[cli文档](https://docs.claude.com/zh-CN/docs/claude-code/cli-reference)
 #### 交互命令
 ```shell
 claude                           # 启动软件
 claude "帮我修复这个 bug"          # 一次性命令执行
-claude -p "<prompt>"             #单次打印模式
-cat file | claude -p "<prompt>"  #大文件读取
-claude update                    #更新客户端，镜像站更新重新运行下载的命令即可
-claude mcp                       #启动mcp向导
+# 管道操作
+cat app.log | claude -p "总结错误类型"
+
+claude update                    # 更新客户端，镜像站更新重新运行下载的命令即可
+claude mcp                       # 启动mcp向导
 ```
+
+```shell
+claude -p "<prompt>"             #单次打印模式
+claude code -p "今天杭州天气"
+根据搜索结果，今天（2025年9月23日）杭州的天气情况如下：
+
+**杭州今天天气：**
+- **温度：** 24°C - 31°C
+- **天气状况：** 中雨
+- **风向风力：** 东风1级
+- **空气质量：** 优
+
+**温馨提示：**
+- 今天有中雨，建议携带雨具
+- 气温适中，但湿度较大
+- 紫外线较弱，仍需注意防晒
+
+cat file | claude -p "<prompt>"  #大文件读取
+cat '.\README.md'| ccr code -p "请帮我润下这篇笔记"
+
+$ ls
+a.txt b.txt c.txt
+$ ls | claude -p "how many txt files in my folder"
+3 txt files.
+```
+
+```shell
+$ ls
+a.txt b.txt c.txt
+$ claude -p "write a python scrip my .txt files" --output-format json jq-r'.result'| grep -oE '\w+\.py' |head -1 | xargs python
+```
+![](./cla.asstes/comm1.png)
 #### 更新claude code
 终端运行`claude update`命令更新claude code版本。
 ```shell
@@ -47,28 +78,55 @@ claude -c              #继续上次对话
 claude -r <id>         #按会话 ID 恢复对话
 claude --resume <id>   #长对话恢复对话
 claude --resume <name> #按照自定义的名字恢复对话
+
+# 继续最近会话
+claude --continue
 ```
 #### claude code快捷命令
 ```shell
-/help          # 列出所有斜线命令
-/add-dir       #添加更多工作目录/bug           #向 Anthropic 报告错误
-/clear         #清除聊天记录  开始一个新的任务的时候，最好先清理一下之前的对话记录，保持一个干净得上下文
-/compact       #压缩上下文   直接得对话记录都会作为上下文传递给ai，这样造成消耗大量token
-/config        #配置菜单
-/cost          #toekn花费统计
-/doctor        #客户端完整性检查
-/exit          # 退出 Claude Code
-/init          #初始化项目，生成 CLAUDE.md全局记忆
-/mcp           #查看mcp列表和状态
-/memory        #编辑记忆
-/model         #更换模型
-/permissions   #修改工具权限
-/pr_comments   #查看PR评论
-/review        #请求代码审查
-/sessions      #列出sessions列表
-/status        #系统/账户状态
-/terminal-setup #安装 Shift+Enter 绑定
-/vim           #切换 vim 模式
+/add-dir                添加一个新的工作目录
+/agents                 管理代理配置
+/bashes                 列出和管理后台任务
+/clear (reset, new)     清除对话历史并释放上下文
+/compact                清除对话历史，但在上下文中保留摘要。可选：/compact [摘要说明]
+/config (theme)         打开配置面板
+/context                将当前上下文使用情况可视化为彩色网格
+/cost                   显示当前会话的总成本和持续时间
+/doctor                 诊断并验证您的 Claude Code 安装和设置
+/exit (quit)            退出 REPL
+/export                 导出当前对话到文件或剪贴板
+/feedback (bug)         提交关于 Claude Code 的反馈
+/help                   显示帮助和可用命令
+/hooks                  管理工具事件的钩子配置
+/ide                    管理 IDE 集成并显示状态
+/init          _           使用代码库文档初始化一个新的 CLAUDE.md 文件
+/install-github-app     为代码仓库设置 Claude GitHub Actions
+/login                  使用您的 Anthropic 帐户登录
+/logout                 从您的 Anthropic 帐户注销
+/mcp                    管理 MCP 服务器
+/memory                          编辑 Claude 内存文件
+/migrate-installer               从全局 npm 安装迁移到本地安装
+/model                           设置 Claude Code 的 AI 模型
+/output-style                    直接或从选择菜单设置输出样式
+/output-style:new                创建一个自定义输出样式
+/permissions (allowed-tools)     管理允许和拒绝工具的权限规则
+/pr-comments                     从 GitHub 拉取请求中获取评论
+/release-notes                   查看发行说明
+/resume                          继续一个对话
+/review                          审查一个拉取请求
+/security-review           完成对当前分支上待定更改的安全审查
+/status                    显示 Claude Code 状态，包括版本、模型、帐户、API 连接和工具状态
+/statusline                设置 Claude Code 的状态行用户界面
+/terminal-setup            安装 Shift+Enter 换行快捷键
+/todos                     列出当前的待办事项
+/upgrade                   升级到 Max 以获得更高的速率限制和更多的 Opus 模型使用权
+/vim                       在 Vim 和普通编辑模式之间切换
+/zcf:bmad-init             /bmad-init 命令 (project, gitignored)
+/zcf:feat                  用于新增功能开发的命令，支持完整的开发流程和工具集成 (project, gitignored)
+/zcf:git-cleanBranches     安全查找并清理已合并或过期的 Git 分支，支持 dry-run 模式与自定义基准/保护分支 (project, gitignored)
+/zcf:git-commit            仅用 Git 分析改动并自动生成 conventional commit 信息（可选 emoji）；必要时建议拆分提交，默认运行本地 Git 钩子（可 --no-verify 跳过） (project, gitignored)
+/zcf:git-rollback          交互式回滚 Git 分支到历史版本；列分支、列版本、二次确认后执行 reset / revert (project, gitignored)
+/zcf:workflow              专业AI编程助手，提供结构化六阶段开发工作流（研究→构思→计划→执行→优化→评审），适用于专业开发者 (project, gitignored)
 ```
 
 快捷键，claude三种模式切换
@@ -76,7 +134,7 @@ claude --resume <name> #按照自定义的名字恢复对话
 - mac：shift+tab
 普通模式，AI的所有修改代码，都必须经过人工得审阅
 ![](./cla.asstes/mo1.png)
-auto-accept模式，claude code修改代码，不再需要人工的审阅
+auto-accept模式，claude code修改代码，不再需要人工的审阅`yes or no`
 ![](./cla.asstes/mo2.png)
 plan mode模式，Claude Code不会进行任何代码修改只会提出自己的想法，还有对如何修改问题的计划，不会上手改任何的代码，如何想让修改代码，切换回普通模式即可。
 ![](./cla.asstes/mo3.png)
@@ -97,13 +155,33 @@ Verbose output: false，是否显示对话输出的详细信息。如果为true�
 或者使用设置全局配置，请使用 `claude config set -g <key> <value>`。
 ```shell
 claude config set -g auto-compact true
+
+
+claude config list # 查看当前配置信息
 ```
+
+`/statusline`
+Claude Code 界面底部显示的自定义状态行，类似于终端提示，像oh-my-zsh 等shell 中的工作方式。
+```bash
+/statusline add hangzhou's weather into our statusline, we're in windows terinal(command prompt)
+```
+让claude code帮你创建一个statusline，同时会在`~/.claude/settings.json`中添加
+```json
+  "statusLine": {
+    "type": "command",
+    "command": "powershell -ExecutionPolicy Bypass -File \"C:\\Users\\xxx\\.claude\\weather-statusline.ps1\""
+  }
+```
+![](./cla.asstes/line.png)
+
+默认配置
 #### 基本的mcp命令
 
-```text
+```shell
 claude mcp list              # 列出现有的mcp服务            
 claude mcp add <name> <cmd>  # 添加新的mcp
 claude mcp remove <name>     # 移除mcp
+claude mcp get <name>        # 查看某个MCP的详细配置
 ```
 
 #### 查询 Token 用量
@@ -115,11 +193,12 @@ claude mcp remove <name>     # 移除mcp
 ![](./cla.asstes/count.png)
 输入输出token、缓存token使用量，使用token费用
 
-#### 终端提示铃声
-配置claude code终端铃声，每次完成请求对话之后呢进行一个给声的通知
+#### 终端提示声
+配置claude code终端铃声，每次完成请求对话之后会有一个铃声的通知
 ```shell
 $ claude config set --global preferredNotifchannel terminal_bell
 ```
+
 ### Claude code + deepseek
 
 claude code接入deepseek说明文档：[Anthropic API | DeepSeek API Docs](https://api-docs.deepseek.com/zh-cn/guides/anthropic_api)
@@ -137,11 +216,13 @@ export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
 windows powershell 临时环境配置，如下图：
 ![](./cla.asstes/env.png)
 
+```powershell
 $env:ANTHROPIC_BASE_URL="https://api.deepseek.com/anthropic"
 $env:ANTHROPIC_AUTH_TOKEN="sk-488ae258c7c64329b4bcb7c48603e13b"
 $env:API_TIMEOUT_MS=600000
 $env:ANTHROPIC_MODEL="deepseek-chat"
 $env:ANTHROPIC_SMALL_FAST_MODEL="deepseek-chat"
+```
 
 终端输入`claude`，启动claude code。
 ![](./cla.asstes/deepseek.png)
@@ -166,11 +247,13 @@ export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
 windows powershell环境配置，如下图：
 
 ![](./cla.asstes/env2.png)
+```powershell
 $env:ANTHROPIC_BASE_URL="https://dashscope.aliyuncs.com/api/v2/apps/claude-code-proxy"
 $env:ANTHROPIC_AUTH_TOKEN="sk-ecc18ddc5abf4d7a9c1b60eed75bb180"
 $env:API_TIMEOUT_MS=600000
-$env:ANTHROPIC_MODEL=" qwen3-coder-plus"
+$env:ANTHROPIC_MODEL="qwen3-coder-plus"
 $env:ANTHROPIC_SMALL_FAST_MODEL="qwen3-coder-plus"
+```
 
 终端输入`claude`，启动claude code。
 ![](./cla.asstes/querwen.png)
@@ -184,7 +267,6 @@ api-key申请：[访问令牌 · 魔搭](https://www.modelscope.cn/my/myaccessto
 ![](./cla.asstes/scope2.png)
 进入该模型页面，点击左侧查看代码示例，就有相关的base_url、model、api_key。
 ![](./cla.asstes/scope3.png)
-ms-13ee6275-e004-485e-b261-5a886ea6c8ba
 
 有了base_url、model、api_key，我们如何接入Claude code呢？可以使用第三方开源框架[musistudio/claude-code-router](https://github.com/musistudio/claude-code-router)。
 - **模型路由**: 根据需求将请求路由到不同的模型
@@ -193,16 +275,28 @@ ms-13ee6275-e004-485e-b261-5a886ea6c8ba
 - **动态模型切换**: 在 Claude Code 中使用 `/model` 命令动态切换模型。
 
 #### Claude Code Router
-安装 Claude Code Router：
+
+Claude Code Router 用于Claude Code根据自定义路由，请求到不同模型。
+阅读文档：[claude-code-router/README_zh.md](https://github.com/musistudio/claude-code-router/tree/main)
+
+安装：
 ```shell
 npm install -g @musistudio/claude-code-router
 ``` 
+
+```shell
+ccr start
+ccr restart
+ccr ui # 启动router web ui
+ccr code -p '提示词'
+```
 
 使用路由器启动 Claude Code：
 ```shell
 ccr code
 ```
-运行claude code，会在以windows为例`C:\Users\{userdir}\.claude-code-router`文件夹，文件夹下存放router配置文件`config.json`。将下面内容复制到config文件中。
+运行claude code，会在以windows为例`C:\Users\{userdir}\.claude-code-router`文件夹，文件夹下存放router配置文件`config.json`。
+下面内容model router到config文件示例：
 ```json
 {
   "LOG": true,
@@ -324,7 +418,7 @@ ccr code
 OpenRouter 是一个 **AI 模型聚合平台**。它通过一个统一的 API 接口，让你能方便地访问和使用来自多家供应商的**数百个大型语言模型（LLM）**，比如我们熟悉的 GPT、Claude、Gemini 等等。
 注册账号：[OpenRouter](https://openrouter.ai/)需要visa卡，首次充值5.8$，这视情况而定。
 
-点击添加供应商，模板选择openRouter，将base_url、api_key、model填写到表达中，保存即可。
+点击添加供应商，模板选择OpenRouter，将base_url、api_key、model填写到表达中，保存即可。
 ![](./cla.asstes/router3.png)
 
 ##### 添加Deepseek路由
@@ -340,7 +434,7 @@ OpenRouter 是一个 **AI 模型聚合平台**。它通过一个统一的 API �
 使用`ccr code`启动claude code，对话框输入`/model zhipu,glm-4.5`切换路由
 ![](./cla.asstes/glm2.png)
 
-##### 设置router路由
+##### 设置model Router路由
 使用`ccr`启动claude code默认`deepseek-chat`
 后台：即备用的模型`modelscope,Qwen/Qwen3-Coder-480B-A35B-Instruct`
 思考：思考模式的时候使用`deepseek, deepseek-reasoner`
@@ -358,7 +452,7 @@ OpenRouter 是一个 **AI 模型聚合平台**。它通过一个统一的 API �
 - 5XX Server Error：服务端波动，稍后重试或切换可用区。
 - “This is a chat model and not supported in the v1/completions endpoint”：  
     把聊天模型发到 `v1/completions` 了；应改用 `/v1/chat/completions`（OpenAI 兼容模式）。
-- 404（Anthropic 路径）：多见于 `…/anthropic` 又被路由层补了一次 `/v1/messages`；**把** Base URL 直接写到 `/v1/messages` 结尾**通常可解。
+- 404（Anthropic 路径）：多见于 `…/anthropic` 又被路由层补了一次 `/v1/messages`；**把** Base URL 直接写到 `/v1/messages` 结尾。
 
 下面相关claude code配置步骤，都是以deepseek-chat模型为基础。
 ### Model Context Protocol 模型上下文协议
@@ -367,9 +461,10 @@ OpenRouter 是一个 **AI 模型聚合平台**。它通过一个统一的 API �
 
 MCP 想象成 AI 应用程序的 USB-C 接口。就像 USB-C 为电子设备提供了一种标准化的连接方式一样，MCP 也为 AI 应用程序连接到外部系统提供了一种标准化的方式。
 官方收录mcp服务器：[modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers)
+github mcp收录：[MCP Registry](https://github.com/mcp)
 具体细节阅读官方文档：[MCP协议文档](https://modelcontextprotocol.io/docs/getting-started/intro)
-### Claude code中添加mcp
-#### 本地范围
+#### 添加mcp
+##### 本地范围
 本地作用域的服务器代表默认的配置级别，并存储在您的项目特定用户设置中，如~/claude/用的家目录。这些服务器仅对您私有，并且仅在当前项目目录内工作时才可访问。
 
 ```shell
@@ -379,7 +474,7 @@ claude mcp add my-private-server /path/to/server
 claude mcp add my-private-server --scope local /path/to/server
 ```
 
-#### 项目范围
+##### 项目范围
 项目范围内的服务器通过在项目根目录生成一个 `.mcp.json` 文件。此文件设计为提交到版本控制中，确保所有团队成员都能访问相同的 MCP 工具和服务。
 
 通过下面命令添加一个mcp服务器，在当前项目目录中生成`.mcp.json` 文件。
@@ -393,7 +488,7 @@ claude mcp add context7 --scope project -- npx -y @upstash/context7-mcp --api-ke
 ```
 `--` 之前的所有内容都是 Claude 的选项（如 `--env` ， `--scope` ）， `--` 之后的所有内容是实际运行的 MCP 服务器的命令。
 
-##### Context7 mcp
+###### Context7 mcp
 Context7为大型语言模型 (LLM) 提供**最新、版本特定的官方文档和代码片段**（next，react，vue等等）。它的核心目的是解决 LLM 因训练数据滞后而产生的“幻觉”问题（如生成过时或根本不存在的 API），从而显著提升 AI 生成代码的准确性和可靠性。
 
 通过claude mcp add --scope project[指定为当前项目范围]  -- [mcp运行的参数]
@@ -452,7 +547,7 @@ Context7 github：[upstash/context7](https://github.com/upstash/context7)
 进入claude code，对话框输入`/mcp`查看mcp启动是否正常。
 ![](./cla.asstes/con2.png)
 
-##### Serana mcp
+###### Serana mcp
 Serena用于项目检索查询和记忆生成，检索项目的速度是非常快的并且内存占用率很低，而且查询项目进行了token优化，相比claude code 原生的read工具性能更高。Serena生成记忆是可控的，对复杂的项目开发非常优好。
 Serena github地址：[oraios/serena](https://github.com/oraios/serena)
 
@@ -475,7 +570,7 @@ $ claude mcp add serena --scope project -- uvx --from git+https://github.com/ora
 
 当启动claude code，serena mcp连通正常会弹出serena log页面，用于查看serena相关日志信息。
 ![](./cla.asstes/serlog.png)
-##### Tavily mcp
+###### Tavily mcp
 
 tavily mcp服务主要用于Web search也就是**网络搜索查询和内容提取功能**，从而获取实时网络信息
 github地址：[tavily-ai/tavily-mcp](https://github.com/tavily-ai/tavily-mcp)
@@ -516,7 +611,7 @@ $ claude mcp add tavily-mcp --scope project --env TAVILY_API_KEY=tvly-dev-Y63wRc
 配置完毕后，再通过`claude mcp list`检查tavily mcp连通信。
 ![](./cla.asstes/tavily.png)
 
-终端运行`claude code`，对话框输出`联网搜索今日天气`。三个有选项，第一个是否使用tavily mcp服务进行查询；第二个选择下次再使用联网搜索直接使用tavily mcp，不需要再次询问。
+终端运行`claude code`，对话框输出`联网搜索今日天气`。三个有选项，第一个是否使用tavily mcp服务进行查询；第二个选择下次再使用联网搜索直接使用tavily mcp，不需要再次询问（或者快捷shift+tab）。
 ![](./cla.asstes/search.png)
 选择第二个选项时，当前项目目录下创建`.claude/settings.local.json`
 ```json
@@ -536,7 +631,7 @@ $ claude mcp add tavily-mcp --scope project --env TAVILY_API_KEY=tvly-dev-Y63wRc
 ```
 比如write、task权限，permissions权限具体设置具体阅读：[permission-setting](https://docs.anthropic.com/en/docs/claude-code/settings#permission-settings)
 
-##### Fetch mcp
+###### Fetch mcp
 
 fetch mcp主要功能就是说我们可以传入一个URL**直接获取、解析和理解网页内容**，并将复杂的 HTML 转换为适合大语言模型 (LLM) 处理的整洁格式（如 Markdown）。
 说明文档：[modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers/tree/main/src/fetch)
@@ -554,7 +649,7 @@ $ claude mcp add fetch --scope project -- uvx mcp-server-fetch
     },
 ```
 
-##### Playwright mcp
+###### Playwright mcp
 
 Playwright MCP服务是微软提供的浏览器自动化MCP服务，可以通过ai模型控制本地浏览器访问。
 微软提供chrome浏览器插件，这个插件允许我们直接自动化操作本地用户的Chrome浏览器，而不是playwright自带沙箱的浏览器[Chromium](https://www.chromium.org/)。使用本地Chrome浏览器可以保证一些网站cookie会话，用户登录状态。基本可以说解决了很多之前无法越过login进行网站测试的问题。
@@ -608,7 +703,7 @@ $ claude mcp add playwright-extension --scope project -- cmd /c npx -y @playwrig
 
 这五个MCP服务就已经全部配置完成，这5个mcp基本上能解决大部开发任务。如果想添加其他mcp服务可以访问查找：[MCP – Model Context Protocol Servers, Clients, and Tools](https://glama.ai/mcp)或者[modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers)
 
-##### Deepwiki mcp
+###### Deepwiki mcp
 DeepWiki MCP 服务器提供对 DeepWiki 公共存储库文档和搜索功能的编程访问（Ask Devin）。
 官方文档：[Deepwiki-mcp](https://docs.devin.ai/work-with-devin/deepwiki-mcp)
 
@@ -617,24 +712,32 @@ DeepWiki MCP 服务器提供对 DeepWiki 公共存储库文档和搜索功能的
 Added HTTP MCP server deepwiki with URL: https://mcp.deepwiki.com/mcp to project config
 File modified: C:\Users\11312\Desktop\claude code\.mcp.json
 ```
-#### 用户范围
+
+直接编辑`.mcp.json`，添加下面内容
+```json
+    "deepwiki": {
+      "type": "http",
+      "url": "https://mcp.deepwiki.com/mcp"
+    }
+```
+##### 用户范围
 用户范围的服务器提供跨项目可访问性，使其在计算机上的所有项目中都可用，同时对用户帐户保持私有。
 ```shell
 claude mcp add my-user-server --scope user /path/to/server
 ```
-### 检测Claude code的mcp服务状态
+#### 检测mcp服务状态
 
 再命令行终端执行`claude mcp list`，监测mcp服务的连通性
 ![](./cla.asstes/mcp.png)
 
-### 远程调用MCP
+#### 远程调用MCP
 **SSE协议**: `cloud mcp add <名称> --protocol sse --url <服务地址>`
 **Streamable HTTP协议**: `cloud mcp add <名称> --protocol streamable-http --url <服务地址>`
 ```shell
 claude mcp add --scope project --transport http context7 https://mcp.context7.com/mcp
 ```
 
-### 删除mcp
+#### 删除mcp
 ```shell
 $ cloud mcp remove <名称>
 ```
@@ -806,7 +909,116 @@ npx prettier --check
   **工作流程**: AI修改代码后，钩子立即触发代码格式检查，若发现错误，Claude Code会自动修复。
   **触发事件**: Claude Code官方文档列举了多种[触发事件](https://docs.claude.com/en/docs/claude-code/hooks-guide#hook-events-overview)，可用于配置更多辅助开发的功能。
 
-## 小记
+### Output Styles
+Output Styies 的核心价值在于它能够彻底改变主智能体的核心行为模式和”人格“，使其从一个专注的”软件工程师“转变为任何领域的专家，同时完整保留其读写文件、执行本地命令等强大能力。可以理解为编程老师，再编码时会有具体解释，实现的逻辑，具体算法等。
+官方阅读文档：[Output Styles](https://docs.claude.com/en/docs/claude-code/output-styles#change-your-output-style)
+
+`/output-style`
+```bash
+#打开风格选择菜单
+/output-style
+
+#直接切换到特定风格
+output-style explaatory
+output-style learning
+```
+
+#### 内置样式
+Default(默认)：专为软件工程任务优化的标准模式，强调效率和代码质量
+Explanatory(解释模式)：在完成任务的同时提供教育性的"洞察”，帮助理解实现选择和代码库模式
+Learning(学习模式)：协作式"边做边学"模式，通过TODO(human)标记引导用户参与编码过程
+![](./cla.asstes/styl1.png)
+
+传统教学 vs 苏格拉底式教学
+传统方式（Explanatory）:
+```txt
+老师:这里应该用循环来处理数组
+学生:好的，我记住了
+```
+苏格拉底式（Learning）:
+```txt
+老师:你觉得处理这个数组最有效的方法是什么?
+学生:一个一个手动处理?
+老师:如果数组有1888个元索呢?
+学生:那就太麻烦了...
+老师:那有什么更好的方法吗?
+学生:用循环!这样可以自动处理所有元素
+```
+
+`Default：帮我用js写一个快速排序。`
+![](./cla.asstes/styl2.png)
+生成的quickSort.js代码中没有任何提示信息。
+
+`Explanatory：帮我用js写一个插入排序，可以帮我详细解释一下，如果有必要，可以在代码里面也解释一下。`
+![](./cla.asstes/styl6.png)
+在解释模式下，有insight实现过程的逻辑，生成的insertionSort.js代码中会存在详细的解释。
+
+`Learning：帮我用js写一个选择排序，请你用苏格拉底式教学教我`
+![](./cla.asstes/styl3.png)
+学习模式下，增加一个`Learn by Doing`告诉具体的实现细节，同时给到你一个task，让你在selectionSort.js中，在TODO(human)注释后面，去实现元素交换的逻辑。
+![](./cla.asstes/styl4.png)
+#### 自定义风格
+创建新的自定义风格
+```bash
+/output-style:new I want an output style that focuses on security analysis
+/output-style:new 我想要一种关注安全分析的输出样式
+```
+![](./cla.asstes/styl5.png)
+
+通过 `/output-style：new` 创建的输出样式在用户级别保存为 Markdown 文件，位于 `~/.claude/output-styles`中，并且可以跨项目使用。它们具有以下结构：
+```md
+---
+description: 专门用于安全分析的输出样式，强调漏洞检测、风险评估和代码审计结果
+---
+
+# 安全分析输出样式指南
+
+## 输出格式要求
+- 使用结构化报告格式展示安全分析结果
+- 采用严重性级别分类（严重/高危/中危/低危/信息）
+- 提供清晰的漏洞定位和修复建议
+- 包含影响范围和风险评估
+
+## 安全报告结构
+1. **漏洞概览**: 按严重性分类统计
+2. **详细分析**: 每个漏洞的深度分析
+3. **修复建议**: 具体可行的解决方案
+4. **风险评估**: 业务影响和可能性评估
+
+## 输出特点
+- 使用醒目标题突出安全问题
+- 采用代码片段展示具体漏洞位置
+- 提供补丁和防御措施建议
+- 包含CVE/CWE等标准漏洞编号引用
+- 优先展示关键安全问题
+
+## 分析深度
+- 深入分析漏洞根本原因
+- 提供 exploit 技术细节（如适用）
+- 建议安全最佳实践
+- 包含合规性检查结果
+```
+可以创建自己的输出样式 Markdown 文件，并将其保存在用户级别 （`~/.claude/output-styles`） 或项目级别 （`.claude/output-styles`）。整个描述文件都是有Claude code帮助我们实现的，我只需要进行一个描述`/output-style:new <des>`。
+```bash
+# 切换到自定义风格
+ /output-style security-analyzer
+# 或通过菜单列表选择
+/output-style
+```
+
+理解 Output Styles 和 Sub-agents 的区别，是掌握 Claude Code 工作流的关键：
+
+| 特性        | Output Styles（输出风格）       | Sub-agents（子智能体）        |
+| --------- | ------------------------- | ----------------------- |
+| **核心隐喻**  | 为同一个智能体**更换帽子**（改变人设）     | 组建一支**专家团队**（委派任务）      |
+| **作用对象**  | 改变**主智能体**的行为模式和系统提示      | 启动一个**独立的、临时的、专门的智能体**  |
+| **上下文窗口** | **共享**。切换风格时，对话历史和上下文保持不变 | **隔离**。每个子智能体都有独立的上下文窗口 |
+| **核心用途**  | 改变交互模式和领域专长               | 任务的封装与委派                |
+| **适用场景**  | 动态调整主智能体的沟通风格             | 创建可复用的"工具人"             |
+- **Output Styles**：让与你对话的**同一个 Claude** 改变说话方式或思考角度
+- **Sub-agents**：让 Claude **叫一个"帮手"** 去独立完成具体工作然后汇报结果
+
+### 小记
 
 #### 1.模型思考深度控制
 claude code控制模型思考长度方法（前提使用claude模型），这四个强度时逐级递增的`"think" < "think hard" < "think harder" < "ultrathink."`
@@ -836,6 +1048,22 @@ claude code控制模型思考长度方法（前提使用claude模型），这四
  **记忆存储位置**:
 - **项目级别**: 直接保存在当前项目的`cloud.md`文件中。
 - **用户级别**: 保存在Claude Code的配置文件中（例如，Windows系统路径为`C:\Users\{username}\.cloud\cloud.md`）。
+
+`@`：
+- **功能**：引用当前文件或文件夹作为上下文
+- **效果**：当前需要引用一个文件或者文件夹，通过`@`能快让claude code速读取相关文件、图像，作为上下文使用。
+![](./cla.asstes/at.png)
+
+对话框中常用快捷键
+
+| ↑箭头              | 显示上一条信息        |
+| ---------------- | -------------- |
+| ↓箭头              | 显示下一条信息        |
+| esc twice        | 按两下esc列出之前对话信息 |
+| ctrl + shift + m | 对话框进入多行选择模式    |
+| ctrl + j         | 另起一行           |
+| ctrl + u         | 移除光标的上一行       |
+| ctrl + k         | 移除光标的下一行       |
 
 #### 4.IDE集成与非交互模式
 **IDE集成**
@@ -870,6 +1098,7 @@ claude code控制模型思考长度方法（前提使用claude模型），这四
 bash(git commit)` 表示以后再执行git commit命令，不许申请权限进行询问，直接自动执行Git commit命令`，其他claude内置工具具体查看：[tools-available-to-claude](https://docs.claude.com/en/docs/claude-code/settings#tools-available-to-claude)
 允许作用的权限范围，当前项目范围，用户范围。就会再`.claude\settings.local.json`文件中的permissions.allow\[]中
 ![](./cla.asstes/per3.png)
+如果希望全部命令不需要进行询问，使用通配符`*`
 
 定义mcp权限
 还可以通过mcp__mcpname，例如`mcp__neon`定义到Allow中，这样claude code再执行neon这个mcp直接执行，不需要再进行授权询问。
@@ -887,22 +1116,21 @@ bash(git commit)` 表示以后再执行git commit命令，不许申请权限进�
 ```shell
 $ cloud --dangerously-skip-permissions
 或
-$ CCR Code --dangerously-skip-permissions
+$ ccr code --dangerously-skip-permissions
 ```
-  效果: 赋予Claude Code最高权限，使其在使用任意工具和执行任意命令时，无需申请权限即可自动执行。
+ 效果: 赋予Claude Code最高权限，使其在使用任意工具和执行任意命令时，无需申请权限即可自动执行。
 
 自定义命令
-项目级别: 在当前项目目录下`.cloud/commands/` 文件夹中创建文件。
-例如：创建一个git commit自定义命令，让claude的`git_commit.md`文件，使用自然语言描述命令需要执行的任务。
+项目级别: 在当前项目目录下`.cloud/commands/` 文件夹中创建一个`.md`文件。
+例如：创建一个git commit自定义命令，让claude code自动提交git log，创建再command文件中创建`git_commit.md`文件，使用自然语言描述命令需要执行的任务。
 ```md
 帮我git提交当前项目下的所有内容，完成暂存区，提交commit操作，提交描述为$ARGUMENTS
 ```
-使用 `$arguments` 作为传入参数的占位符，在使用自定义命令时进行参入参数。
+- `$arguments` 作为传入参数的占位符，在使用自定义命令时进行参入参数。
 自定义命令就在对话框输入`/git_commit claude code notes`，空格后传入的参数
 ![](./cla.asstes/per6.png)
 
-#### 6.历史对话与状态管理
-
+#### 6.历史对话
 1.**`/resume`**：查找并回溯之前的历史话题。
 ![](./cla.asstes/his1.png)
 选择历史话题后，按两下`ESC`键可跳转到具体对话列表，箭头选择具体某句话之前，进行继续对话。这是一个找回历史对话记录的好办法。
@@ -913,3 +1141,20 @@ $ CCR Code --dangerously-skip-permissions
 - **功能**: 将当前对话内容复制到剪贴板。
 - **用途**: 可将对话内容保存为文件，或粘贴给其他AI（例如chatgpt、gemini）进行交叉验证或进一步分析。
 ![](./cla.asstes/his3.png)
+
+3.**`/context`**: (限于claude模型)
+- 功能：查看当前对话的长度大小，最大长度为200k的token
+```shell
+/context
+Context Usage
+claude-opus-4-1-20250805 17k/200k tokens(9%)
+
+System prompt:3.9k tokens (2.0%)  // claoude.md和claude code的提示词
+System tools:11.5k tokens (5.8%) // 使用系统claude tools工具
+Custom agents:24 tokens (0.0%)
+Memory files:1.6k tokens (0.8%)
+Messages:278 tokens (0.1%)
+Free space:182.6k (91.3%)
+```
+![](./cla.asstes/context.png)
+随着使用对话长度越长，会时上述图中的方格填充，当一个任务处理完毕后，使用`/clear`结束对话。

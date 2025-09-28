@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "e4ad08d0713fdb18",
+        "id": "cff9e3284c79c85f",
         "type": "tabs",
         "children": [
           {
-            "id": "e068c5725456f694",
+            "id": "b37acc59669aae3c",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "claude code lean.md",
+                "file": "README.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "claude code lean"
+              "title": "README"
             }
           }
         ]
@@ -78,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 286.5
+    "width": 273.5
   },
   "right": {
     "id": "214ae60f0cce5cfd",
@@ -142,13 +142,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "claude code lean.md",
+                "file": "README.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "claude code lean 的大纲"
+              "title": "README 的大纲"
             }
           }
         ],
@@ -169,23 +169,30 @@
       "bases:创建新数据库": false
     }
   },
-  "active": "e068c5725456f694",
+  "active": "98d03fffae7c4efd",
   "lastOpenFiles": [
-    "daily.png",
-    "claude code lean.md",
-    "Pasted image 20250922011634.png",
-    "cla.asstes/his1.png",
-    "cla.asstes/his3.png",
-    "cla.asstes/his2.png",
-    "Pasted image 20250922011446.png",
-    "cla.asstes/hook1.png",
-    "cla.asstes/hook3.png",
-    "cla.asstes/hook2.png",
-    "cla.asstes/hook4.png",
-    "cla.asstes/per6.png",
-    "CLAUDE.md",
-    "billing-system.html",
-    "cla.asstes",
-    "billing-system.html.tmp.17448.1757511912771"
+    "f1d230fc-790b-40a5-996e-2a712f69ecf0.png",
+    "cla.asstes/line.png",
+    "README.md",
+    "line/weather-statusline.ps1",
+    "line/weather-statusline.bat",
+    "line/weather-simple.ps1",
+    "line/weather-statusline-README.md",
+    "line",
+    "新建文件夹",
+    "f1d230fc-790b-40a5-996e-2a712f69ecf0 1.png",
+    "$null",
+    "README.md.tmp.51364.1759053770293",
+    "demo/quickSort.js",
+    "demo/insertionSort.js",
+    "demo/selectionSortComplete.js",
+    "cla.asstes/styl1.png",
+    "cla.asstes/styl3.png",
+    "cla.asstes/styl5.png",
+    "cla.asstes/styl4.png",
+    "cla.asstes/styl6.png",
+    "cla.asstes/styl2.png",
+    "cla.asstes/at.png",
+    "CLAUDE.md"
   ]
 }
