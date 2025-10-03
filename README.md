@@ -466,7 +466,7 @@ OpenRouter 是一个 **AI 模型聚合平台**。它通过一个统一的 API �
 
 MCP 想象成 AI 应用程序的 USB-C 接口。就像 USB-C 为电子设备提供了一种标准化的连接方式一样，MCP 也为 AI 应用程序连接到外部系统提供了一种标准化的方式。
 官方收录mcp服务器：[modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers)
-MCP 服务器集合：[punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)
+MCP 服务器集合：[punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)，[smithery](https://smithery.ai/)
 github mcp收录：[MCP Registry](https://github.com/mcp)
 具体细节阅读官方文档：[MCP协议文档](https://modelcontextprotocol.io/docs/getting-started/intro)
 #### 添加mcp
@@ -1172,3 +1172,18 @@ Free space:182.6k (91.3%)
 ![](./cla.asstes/context.png)
 
 随着使用对话长度越长，会时上述图中的方格填充，当一个任务处理完毕后，使用`/clear`结束对话。
+
+
+### 集合
+
+#### Mcp：
+官方收录mcp服务器：[modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers)
+MCP 服务器集合：[punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)，[smithery](https://smithery.ai/)
+github mcp收录：[MCP Registry](https://github.com/mcp)
+
+#### Prom提示词：
+[prompts.chat](https://prompts.chat/)：收录各种各样的提示词
+[Prompt-Engineering-Guide](https://github.com/dair-ai/Prompt-Engineering-Guide)：提示工程指南、论文、讲座、笔记本和资源
+
+#### Claude code模板
+[claude-code-templates](https://github.com/davila7/claude-code-templates)：包含全面的 AI 代理、自定义命令、设置、钩子、外部集成（MCPs）和项目模板，以提升您的开发工作流程。
