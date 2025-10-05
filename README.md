@@ -1,6 +1,7 @@
 ## Claude code快速上手
 
 Claude code 阅读文档：[ Anthropic Overview](https://docs.anthropic.com/en/docs/claude-code/overview)
+Claude 代码文档、指南与最佳实践：[ClaudeLog](https://claudelog.com/)
 官方代理编码的最佳实践：[claude-code-best-practices](https://www.anthropic.com/engineering/claude-code-best-practices)
 ### 安装
 
@@ -12,8 +13,8 @@ Claude code 阅读文档：[ Anthropic Overview](https://docs.anthropic.com/en/d
 npm install -g @anthropic-ai/claude-code
 ```
 
+安装完成后需要配置deepseek，qwen国内模型才能使用。
 其他环境参考官方文档：[快速入门 - Anthropic Quickstart](https://docs.anthropic.com/en/docs/claude-code/quickstart)
-
 ### 常用命令
 Claude code：[cli文档](https://docs.claude.com/zh-CN/docs/claude-code/cli-reference)
 #### 交互命令
@@ -157,7 +158,6 @@ Verbose output: false，是否显示对话输出的详细信息。如果为true�
 或者使用设置全局配置，请使用 `claude config set -g <key> <value>`。
 ```shell
 claude config set -g auto-compact true
-
 
 claude config list # 查看当前配置信息
 ```
@@ -1086,6 +1086,7 @@ claude code控制模型思考长度方法（前提使用claude模型），这四
 | ctrl + j         | 另起一行           |
 | ctrl + u         | 移除光标的上一行       |
 | ctrl + k         | 移除光标的下一行       |
+| ctrl +o          | 可展开完整答案        |
 
 #### 4.IDE集成与非交互模式
 **IDE集成**
@@ -1176,14 +1177,15 @@ Free space:182.6k (91.3%)
 
 ### 集合
 
-#### Mcp：
+#### Mcp
 官方收录mcp服务器：[modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers)
 MCP 服务器集合：[punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)，[smithery](https://smithery.ai/)
 github mcp收录：[MCP Registry](https://github.com/mcp)
 
-#### Prom提示词：
+#### Prom提示词
 [prompts.chat](https://prompts.chat/)：收录各种各样的提示词
 [Prompt-Engineering-Guide](https://github.com/dair-ai/Prompt-Engineering-Guide)：提示工程指南、论文、讲座、笔记本和资源
 
 #### Claude code模板
 [claude-code-templates](https://github.com/davila7/claude-code-templates)：包含全面的 AI 代理、自定义命令、设置、钩子、外部集成（MCPs）和项目模板，以提升您的开发工作流程。
+[CLAUDE-MD-Templates](https://github.com/ruvnet/claude-flow/wiki/CLAUDE-MD-Templates)：CLAUDE.MD文件记忆模板
