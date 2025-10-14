@@ -1,0 +1,8 @@
+{
+  "name": "my-first-plugin",
+  "description": "一个简单的问候插件，用于学习基础知识",
+  "version": "1.0.0",
+  "author": {
+    "name": "echo9z"
+  }
+}

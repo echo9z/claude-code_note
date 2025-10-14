@@ -854,6 +854,211 @@ Claude Code 递归读取记忆：从当前工作目录（cwd）开始，Claude C
 ![](./cla.asstes/h1.png)
 
 如果当前项目的代码发生变化，可以再对话框输入`更新update claude.md`，会更具当前代码更新claude.md文件。
+### Plugins
+插件允许通过自定义功能扩展 Claude code，将command、subagents、hooks、mcp封装成一个工作，可以在项目和团队之间共享。从市场安装插件以添加预构建的命令、代理、钩子和 MCP 服务器，或创建自己的插件来自动化的工作流程。
+阅读文档：[Plugins - Claude Docs](https://docs.claude.com/en/docs/claude-code/plugins)
+插件参考：[Plugins reference - Claude Docs](https://docs.claude.com/en/docs/claude-code/plugins-reference)
+插件市场：[Plugin marketplaces - Claude Docs](https://docs.claude.com/en/docs/claude-code/plugin-marketplaces#add-local-marketplaces-for-development)
+
+#### 添加官方或者第三方plugins
+
+官方：[claude-code/plugins](https://github.com/anthropics/claude-code/tree/main/plugins)
+`/plugin`，管理claude code插件，
+```
+1. Browse and install plugins     浏览和选择市场中安装插件
+2. Manage and uninstall plugins   管理浏览和选择市场中安装插件，比如禁用、升级、卸载等
+3. Add marketplace  添加插件市场
+4. Manage marketplaces 管理插件市场
+```
+![](./cla.asstes/plug4.png)
+
+将市场添加到 Claude Code：
+```shell
+# 列出所有配置的市场
+/plugin marketplace list
+⎿  Configured marketplaces:
+       • test-marketplace
+       • claude-code-workflows
+       • claude-code-templates
+
+# 添加插件市场
+/plugin marketplace add <locat path|git-url>
+
+# 添加本地的插件市场
+/plugin marketplace add ./test-marketplace
+
+# 添加第三方github仓库插件市场
+/plugin marketplace add https://github.com/davila7/claude-code-templates
+
+# 更新市场元数据
+/plugin marketplace update marketplace-name
+
+# 移除市场
+/plugin marketplace remove marketplace-name
+```
+
+选择市场中要安装的插件，比如`git-workflow`工作流插件
+![](./cla.asstes/plug5.png)
+
+安装市场中的插件：
+```shell
+# 安装市场中的插件
+/plugin install <plugin-name>@<marketplaces-name>
+/plugin install git-workflow@claude-code-templates
+
+# 启用一个禁用的插件
+/plugin enable plugin-name@marketplace-name
+
+# 禁用插件
+/plugin disable plugin-name@marketplace-name
+
+# 卸载移除插件
+/plugin uninstall plugin-name@marketplace-name
+```
+
+#### 自定义简单plugins
+在当前Claude code目录，创建`测试插件市场`：
+```shell
+$ mkdir test-marketplace
+$ cd test-marketplace
+```
+
+1.`test-marketplace`文件夹中创建`市场清单`
+```shell
+$ mkdir .claude-plugin
+$ cat > .claude-plugin/marketplace.json << 'EOF'
+{
+  "name": "test-marketplace",
+  "owner": {
+    "name": "Test User"
+  },
+  "plugins": [
+    {
+      "name": "my-first-plugin",
+      "source": "./my-first-plugin",
+      "description": "My first test plugin"
+    }
+  ]
+}
+EOF
+```
+
+2.在`test-marketplace`文件夹中创建`插件目录`，插件名称`my-first-plugin`
+```shell
+$ mkdir my-first-plugin
+$ cd my-first-plugin
+```
+
+3.`my-first-plugin`文件夹中创建`插件清单`
+```shell
+$ mkdir .claude-plugin
+$ cat > .claude-plugin/plugin.json << 'EOF'
+{
+  "name": "my-first-plugin",
+  "description": "一个简单的问候插件，用于学习基础知识",
+  "version": "1.0.0",
+  "author": {
+    "name": "echo9z"
+  }
+}
+EOF
+```
+
+4.在`my-first-plugin`文件夹中添加`自定义命令`
+```shell
+mkdir commands
+cat > commands/hello.md << 'EOF'
+ --- description: Greet the user with a personalized message
+ ---
+ # Hello Command Greet the user warmly and ask how you can help them today. Make the greeting personal and encouraging. 
+EOF
+```
+[[hello.md]]
+
+5.在`my-first-plugin`文件夹中添加`自定义subagent`
+```shell
+mkdir agents
+cat > agents/helper.md << 'EOF'
+...
+具体内容查看 test-marketplace/my-first-plugin/agents/helper.md
+...
+EOF
+```
+[[helper.md]]
+
+6.在`my-first-plugin`文件夹中添加`自定义hooks`
+```shell
+mkdir hooks
+cat > agents/hook.json << 'EOF'
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'stop hooks被触发，hello'"
+          }
+        ]
+      }
+    ]
+  }
+}
+EOF
+```
+
+7.添加mcp服务器，位置：插件根目录下的 `.mcp.json` ，或在 plugin.json 中内联
+在`my-first-plugin`文件夹中创建 `.mcp.json` 
+```shell
+touch .mcp.json
+cat > .mcp.json << 'EOF'
+{
+  "mcpServers": {
+    "time": {
+      "command": "uvx",
+      "args": ["mcp-server-time"]
+    }
+  }
+}
+EOF
+```
+
+安装并测试创建的插件，终端启动的claude code
+```
+$ claude
+```
+
+添加测试市场
+```txt
+/plugin marketplace add ./test-marketplace
+```
+![](./cla.asstes/plug1.png)
+
+安装的`my-first-plugin`插件
+```txt
+/plugin install my-first-plugin@test-marketplace
+```
+![](./cla.asstes/plug2.png)
+这样一个简单插件配置好了，通过`/hello`运行这个新的命令
+![](./cla.asstes/plug3.png)
+插件遵循以下基本结构：
+```shell
+
+test-marketplace/            # 市场插件
+├── .claude-plugin/
+│   └──marketplace.json       # 市场插件清单信息
+└── my-first-plugin/           
+    ├── .claude-plugin/
+    │   └── plugin.json          # 插件元数据信息，版本、source、license、mcp、agent等
+    ├── commands/                # Custom slash commands (optional)
+    │   └── hello.md
+    ├── agents/                  # Custom agents (optional)
+    │   └── helper.md
+    ├── hooks/                   # Event handlers (optional)
+    │   └── hooks.json
+    └── .mcp.json
+```
 
 ### Hooks（钩子）
 claude code hooks阅读文档：[hooks](https://docs.claude.com/en/docs/claude-code/hooks-guide)
@@ -866,15 +1071,17 @@ claude code hooks阅读文档：[hooks](https://docs.claude.com/en/docs/claude-c
 
 对话框输入`/hooks`
 ![](./cla.asstes/hook1.png)
-- **PreToolUse**：在工具调用之前运行（可以阻止它们）
-- **PostToolUse**：工具调用完成后运行
-- **UserPromptSubmit**：在用户提交提示时运行，然后 Claude 处理它
-- **Notification** ：在 Claude Code 发送通知时运行
-- **Stop**：当 Claude Code 完成响应时运行
-- **SubagentStop**：子代理任务完成时运行
-- **PreCompact**：在 Claude Code 即将运行压缩作之前运行
-- **SessionStart**：当 Claude Code 启动新会话或恢复现有会话时运行
-- **SessionEnd**：在 Claude Code 会话结束时运行
+```md
+PreToolUse：在工具调用之前运行（可以阻止它们）
+PostToolUse：工具调用完成后运行
+UserPromptSubmit：在用户提交提示时运行，然后 Claude 处理它
+Notification：在 Claude Code 发送通知时运行
+Stop：当 Claude Code 完成响应时运行
+SubagentStop：子代理任务完成时运行
+PreCompact：在 Claude Code 即将运行压缩作之前运行
+SessionStart：当 Claude Code 启动新会话或恢复现有会话时运行
+SessionEnd：在 Claude Code 会话结束时运行
+```
 
 选择 `+ Add new matcher…`，在执行claude内置工具时执行，具体工具参考：[tools-available-to-claude](https://docs.claude.com/en/docs/claude-code/settings#tools-available-to-claude)。
 比如：bash，仅在 Bash 工具调用时运行挂钩。
@@ -908,13 +1115,13 @@ npx prettier --check
   }
 }
 ```
-**配置文件**: 项目目录下`.cloud/settings.json` 或优先级更高的 `.cloud/settings.local.json`
-- **配置示例**:
-	- **定义时机**: `hooks` 中定义执行时机，例如`PostToolUse`（工具调用完成后）。
-	- **匹配器 (`Matcher`)**: 指定触发钩子的工具类型，例如文件修改工具。
-	- **命令内容**: 定义要执行的命令，例如运行`npx prettier check`来检查代码格式。  
-  **工作流程**: AI修改代码后，钩子立即触发代码格式检查，若发现错误，Claude Code会自动修复。
-  **触发事件**: Claude Code官方文档列举了多种[触发事件](https://docs.claude.com/en/docs/claude-code/hooks-guide#hook-events-overview)，可用于配置更多辅助开发的功能。
+**配置文件**：项目目录下`.cloud/settings.json` 或优先级更高的 `.cloud/settings.local.json`
+**配置示例**：
+- **定义时机**：`hooks` 中定义执行时机，例如`PostToolUse`（工具调用完成后）。
+- **匹配器 (`Matcher`)**：指定触发钩子的工具类型，例如文件修改工具。
+- **命令内容**：定义要执行的命令，例如运行`npx prettier check`来检查代码格式。  
+**工作流程**：AI修改代码后，钩子立即触发代码格式检查，若发现错误，Claude Code会自动修复。
+**触发事件**：Claude Code官方文档列举了多种[触发事件](https://docs.claude.com/en/docs/claude-code/hooks-guide#hook-events-overview)，可用于配置更多辅助开发的功能。
 
 ### Output Styles
 Output Styies 的核心价值在于它能够彻底改变主智能体的核心行为模式和”人格“，使其从一个专注的”软件工程师“转变为任何领域的专家，同时完整保留其读写文件、执行本地命令等强大能力。可以理解为编程老师，再编码时会有具体解释，实现的逻辑，具体算法等。
@@ -1177,10 +1384,16 @@ Free space:182.6k (91.3%)
 
 ### 集合
 
+[hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code)：一个精心策划的列表，包含各种斜杠命令、`CLAUDE.md` 模板、CLI 工具和其他资源，用于增强您的 Claude Code 工作流程。该存储库是社区知识库，可帮助开发人员充分利用 Anthropic 的 CLI AI 编码助手。
+
 #### Mcp
 官方收录mcp服务器：[modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers)
 MCP 服务器集合：[punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)，[smithery](https://smithery.ai/)
 github mcp收录：[MCP Registry](https://github.com/mcp)
+Awesome MCP Servers：[appcypher/awesome-mcp-servers](https://github.com/appcypher/awesome-mcp-servers) - 精选的模型上下文协议服务器列表
+
+#### SubAgents
+[wshobson/agents](https://github.com/wshobson/agents)：一套为 Claude Code 准备的、可用于生产环境的子代理集合
 
 #### Prom提示词
 [prompts.chat](https://prompts.chat/)：收录各种各样的提示词

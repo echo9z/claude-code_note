@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'stop hooks被触发，hello'"
+          }
+        ]
+      }
+    ]
+  }
+}
