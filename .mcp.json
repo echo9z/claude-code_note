@@ -60,6 +60,34 @@
     "deepwiki": {
       "type": "http",
       "url": "https://mcp.deepwiki.com/mcp"
+    },
+    "zai-img": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@z_ai/mcp-server"
+      ],
+      "env": {
+        "Z_AI_API_KEY": "d8cd355067a949e182db0d32abbf84b1.4giNh95rtlL9BmtG",
+        "Z_AI_MODE": "ZHIPU"
+      }
+    },
+    "web-search": {
+      "type": "http",
+      "url": "https://open.bigmodel.cn/api/mcp/web_search_prime/mcp",
+      "headers": {
+        "Authorization": "Bearer d8cd355067a949e182db0d32abbf84b1.4giNh95rtlL9BmtG"
+      }
+    },
+    "web-reader": {
+      "type": "http",
+      "url": "https://open.bigmodel.cn/api/mcp/web_reader/mcp",
+      "headers": {
+        "Authorization": "Bearer d8cd355067a949e182db0d32abbf84b1.4giNh95rtlL9BmtG"
+      }
     }
   }
 }

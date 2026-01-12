@@ -20,13 +20,22 @@
       "mcp__playwright-extension__browser_evaluate",
       "mcp__playwright-extension__browser_close",
       "Bash(node:*)",
-      "Read(//c/Users/11312/.claude/**)"
+      "Read(//c/Users/11312/.claude/**)",
+      "Bash(cat:*)",
+      "mcp__web-search__webSearchPrime"
     ]
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "context7",
-    "serena"
+    "serena",
+    "tavily-mcp",
+    "fetch",
+    "playwright-extension",
+    "deepwiki",
+    "zai-img",
+    "web-search",
+    "web-reader"
   ],
   "hooks": {
     "PostToolUse": [

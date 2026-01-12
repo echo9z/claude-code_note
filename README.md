@@ -1060,6 +1060,248 @@ test-marketplace/            # 市场插件
     └── .mcp.json
 ```
 
+### Skills
+Anthropic Agent Skills官方文档：[https://agentskills.io](https://link.zhihu.com/?target=https%3A//agentskills.io/)
+阅读文档：[Agent Skills - Claude Docs](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)
+Claude官方skills仓库：[anthropics/skills](https://github.com/anthropics/skills)
+[claude-cookbooks/skills](https://github.com/anthropics/claude-cookbooks/blob/main/skills/notebooks/01_skills_introduction.ipynb)
+Claude skills精选：[awesome-claude-skills](https://github.com/BehiSecc/awesome-claude-skills)
+生成skills工具：[yusufkaraaslan/Skill_Seekers](https://github.com/yusufkaraaslan/Skill_Seekers) 将文档网站、GitHub 仓库和 PDF 文件转换为可投入生产的 Claude AI Skills
+
+Agent Skills 是模块化的功能，用于扩展 Claude 的功能。每个 Skill 都打包了指令、元数据和可选资源（脚本、模板），Claude 在需要时会自动按需加载，使用它们。
+与用于一次性任务的对话级指令（prompts）不同，Skills 按需加载，并消除了在多个对话中重复提供相同指导的需求。Agent Skills 只是先把目录加载进提示词，然后根据需要，再决定是否查阅正文与附件。这样比起传统的 Prompt 或者 MCP 的方式，Agent Skills 的最大好处是大幅降低了 token 消耗与提示词的复杂度。
+
+个人理解：
+- 把一些常用重复的操作，复杂的逻辑判断和处理流程，封装成一个可复用的模块。
+- 可以整合**MCP、工具调用、多SubAgent 协作**，拼成一整套工作流。
+- 加载上下文按需加载，而不是像mcp服务器将一堆指令和文档全部加载，会消耗跟多token；skills使用其中1-2个工具，加载token相对少于前者。
+
+创建技能目录：比如在当前项目级别下创建一个`~/.claude/skills/myskill-name`目录。
+
+#### Skills基础结构
+```bash
+myskill-name/
+├── SKILL.md (必需)
+│   ├── YAML 前置元数据 (必需)
+│   │   ├── name: (必需)
+│   │   └── description: (必需)
+│   └── Markdown 指令 (必需)
+└── 打包资源 (可选)
+    ├── scripts/     - 可执行代码
+	│   └── exec.py
+    ├── references/  - 上下文文档
+	│   └── doc.md
+    └── assets/      - 输出文件（模板、图片等）
+	    └── pic.png
+```
+
+Skills.md主要分为三个结构
+
+1. **Metadata** (~100 tokens): 
+    元数据 (~100 个标记)： `name` 和 `description` 字段在启动时加载到所有技能中
+2. **Instructions** (< 5000 tokens recommended): 
+    说明 (<5000 个标记推荐)：当技能被激活时，会加载完整的 `SKILL.md` 内容
+3. **Resources** (as needed): 
+    资源（按需加载）：文件（例如那些在 `scripts/` 、 `references/` 或 `assets/` 中的文件）仅在需要时加载
+
+![](./cla.asstes/skill1.png)
+#### Level 1：Metadata (always loaded)
+元数据（始终加载）
+`SKILL.md` 文件必须以 YAML （一种文件格式，类比JSON）的前置字段（frontmatter）开头，其中包含必需的**元数据**：`name`（名称）和`description`（描述）。在启动时，agent会预加载所有已安装skill的 `name` 和 `description`。Claude 在启动时加载此元数据，并将其包含在系统提示中。
+
+```md
+---
+name: pdf-processing
+description: Extract text and tables from PDF files, fill forms, merge documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction.
+---
+```
+
+`name` : 只能使用小写字母、数字和连字符（最多 64 个字符）
+`description` : 简要描述技能的作用以及何时使用它（最多 1024 个字符）
+
+#### Level 2：Instructions (loaded when triggered)
+指令（在触发时加载）
+SKILL.md 的主要包含了当前skill的主要工作内容、工作内容，最佳实践和指导说明：
+```txt
+## Overview
+This guide covers essential PDF processing operations using Python libraries and command-linetools. For advanced features, JavaScript libraries, and detailed examples, see ./reference.mdIf you need to fill out aPF form, read ./forms.md and follow its instructions.
+
+## Quick start
+```python
+from pypdf import PdfReader, PdfWriter
+
+# Read a PDF
+reader = PdfReader("document.pdf")
+print(f"Pages: {len(reader.pages)}")
+
+```
+当请求的内容与某个技能的描述相匹配时，Claude 会通过 bash 从文件系统中读取 SKILL.md。只有在此之后，这些内容才会进入上下文窗口。
+
+#### Level 3：Resources and code (loaded as needed)
+资源和代码（按需加载）
+随着skills功能变得更复杂，可能包含过多内容，无法全部放进单个 `SKILL.md` 文件，或者其中一些内容只在特定场景下才需要。在这种情况下，skills可以在其目录中携带多个附加文件，并在 `SKILL.md` 中按文件名进行引用。这些额外链接的文件属于**第三层级**（以及更深层级）的细节，Claude 只有在需要时才会选择进入并读取它们。
+
+PDF skill 中，`SKILL.md` 引用了两个额外的文件（`reference.md` 和 `forms.md`）。将填写表单的说明移至单独的文件（ `forms.md` ），Claude 只有在填写表单时才会读取 `forms.md` 附加文件。
+![](./cla.asstes/skill2.png)
+
+就像一本组织良好的手册，从目录开始，然后是具体章节，最后是详细的附录，skills让 Claude 仅在需要时加载信息：
+![](./cla.asstes/skill3.png)
+#### 技能与上下文窗口
+
+下图展示了当skills被用户消息触发时，上下文窗口如何变化。
+![](./cla.asstes/skill4.png)
+技能通过您的系统提示在上下文窗口中触发。
+操作执行顺序：
+1. 首先，上下文窗口包含核心系统提示以及每个已安装skills的元数据，还有用户的初始消息；
+2. Claude 通过调用 Bash 工具来读取 `pdf/SKILL.md` 的内容，从而触发 PDF 技能；
+3. Claude 选择读取技能捆绑的 `forms.md` 文件；
+4. 最后，Claude 在加载了来自 PDF 技能的相关指令后，开始执行用户的任务。
+
+#### 技能与代码执行
+Skill 可以包含代码，Claude 在需要时可以把这些代码当作工具来执行。
+例如，通过 token 生成排序列表算法**比**直接运行排序算法成本更高。
+
+在示例中，PDF 技能包含一个预写的 Python 脚本，该脚本读取 PDF 并提取所有表单字段。Claude 可以运行此脚本，无需将脚本或 PDF 加载到上下文中。由于代码执行是可确定性的，因此此工作流程是且可重复的。
+![](./cla.asstes/skill5.png)
+
+接下来我们自定一个简单的skill案例
+在 `~/.claude/skills/text-stats/SKILL.md` 写入：
+```md
+---
+name: text-stats
+description: 分析文本以统计单词数量并计算频率。当用户要求获取文本统计数据或单词计数时使用此功能。
+---
+
+# Text Statistics Skill
+
+## 用途
+当用户需要分析一段文本的长度、词汇频率或基本统计信息时使用此技能。
+
+## 指令
+1. 接收用户提供的文本。
+2. 运行 `./script/analyze.py` 脚本来处理文本。
+3. 向用户展示统计结果。
+
+## 示例
+User: "分析这段关于 AI 的介绍文本..."
+Assistant: [运行 analyze.py 并展示结果]
+```
+在`text-stats/script/analyze.py`写入：
+```python
+# 当前为示例脚本，支持英文
+import sys
+from collections import Counter
+import re
+
+def analyze_text(text):
+    words = re.findall(r'\w+', text.lower())
+    print(f"Total words: {len(words)}")
+    print(f"Top 5 words: {Counter(words).most_common(5)}")
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        analyze_text(sys.argv[1])
+    else:
+        print("No text provided.")
+```
+重启claude code，输入`/skills`查看定义skills相关技能；
+![](./cla.asstes/skill6.png)
+
+当然，这里的脚本是claude code使用bash工具执行的代码，不会将脚本读取加载到上下文中，哪怕脚本写了一万行，只会执行代码，所以执行代码前需要确认是否安全可靠。
+![](./cla.asstes/skill7.png)
+
+定义一个专门处理Excel数据清洗的skills，创建`SKILL.md`文件
+```
+---
+name: "Excel数据处理专家"
+description: "专门处理Excel数据清洗、格式转换和报表生成的智能助手"
+---
+
+# Excel数据处理专家技能
+
+你是一位Excel数据处理专家，擅长数据清洗、格式转换和报表生成。
+
+## 核心能力
+
+### 数据清洗
+- 去除重复数据
+- 处理缺失值
+- 统一数据格式
+- 异常值检测和处理
+
+### 格式转换
+- CSV转Excel
+- 文本分列处理
+- 日期格式标准化
+- 数字格式调整
+
+### 报表生成
+- 数据透视表创建
+- 图表制作建议
+- 自动化报表模板
+- 数据可视化建议
+
+也可以参考`./resources/excel-formulas.md`公式进行相关操作
+
+## 使用原则
+
+1.**优先检查数据质量**：在处理前先分析数据现状
+2.**提供处理方案**：给出详细的操作步骤
+3.**解释处理逻辑**：让用户理解每一步的原因
+4.**建议验证方法**：提供数据验证的技巧
+
+## 常见问题处理
+
+### 重复数据
+使用删除重复项功能，或提供公式识别重复项
+
+### 缺失值
+根据数据类型选择填充策略（均值、中位数、众数等）
+
+### 格式不统一
+使用文本分列、查找替换等功能统一格式
+
+```
+
+SKILL.md正文说明信息中包含附加文件模板`resources/excel-formulas.md`
+```
+# Excel常用公式速查
+
+## 数据清洗公式
+
+### 去除空格
+- =TRIM(A1) - 去除首尾空格
+- =CLEAN(A1) - 去除不可见字符
+
+### 文本处理
+- =LEFT(A1,5) - 提取左侧5个字符
+- =RIGHT(A1,3) - 提取右侧3个字符
+- =MID(A1,2,4) - 从第2位开始提取4个字符
+
+### 条件判断
+- =IF(A1>0,"正数","负数") - 条件判断
+- =IFERROR(A1/B1,"错误") - 错误处理
+
+## 数据统计公式
+
+### 基础统计
+- =SUM(A1:A10) - 求和
+- =AVERAGE(A1:A10) - 平均值
+- =MAX(A1:A10) - 最大值
+- =MIN(A1:A10) - 最小值
+
+### 计数统计
+- =COUNT(A1:A10) - 数字单元格计数
+- =COUNTA(A1:A10) - 非空单元格计数
+- =COUNTIF(A1:A10,">60") - 条件计数
+
+```
+
+接下来测试我们skill，比如当前我们有下面数据表格
+![](./cla.asstes/skill8.png)
+执行skill的效果
+![](./cla.asstes/skill9.png)
+
 ### Hooks（钩子）
 claude code hooks阅读文档：[hooks](https://docs.claude.com/en/docs/claude-code/hooks-guide)
 在 Claude code执行的不同阶段自动触发一些脚本，比如：
