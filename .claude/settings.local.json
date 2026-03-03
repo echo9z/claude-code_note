@@ -22,7 +22,9 @@
       "Bash(node:*)",
       "Read(//c/Users/11312/.claude/**)",
       "Bash(cat:*)",
-      "mcp__web-search__webSearchPrime"
+      "mcp__web-search__webSearchPrime",
+      "mcp__playwright-extension__browser_run_code",
+      "mcp__playwright-extension__browser_snapshot"
     ]
   },
   "enableAllProjectMcpServers": true,
