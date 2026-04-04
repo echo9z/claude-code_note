@@ -3,6 +3,10 @@
 Claude code 阅读文档：[ Anthropic Overview](https://docs.anthropic.com/en/docs/claude-code/overview)
 Claude 代码文档、指南与最佳实践：[ClaudeLog](https://claudelog.com/)
 官方代理编码的最佳实践：[claude-code-best-practices](https://www.anthropic.com/engineering/claude-code-best-practices)
+Anthropic 黑客松冠军项目：[everything-claude-code.](https://github.com/affaan-m/everything-claude-code)
+一个从零到一构建的纳米级Claude Code 类代理：[learn-claude-code](https://github.com/shareAI-lab/learn-claude-code)
+Claude-Code-最佳实践:[claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice)
+
 ### 安装
 
 文档运行环境需要：Win11，Powershell、Git 2.48+、Node20+、uv8.0+
@@ -1066,8 +1070,8 @@ test-marketplace/            # 市场插件
 ```
 
 ### Skills
-Anthropic Agent Skills官方文档：[https://agentskills.io](https://link.zhihu.com/?target=https%3A//agentskills.io/)
-阅读文档：[Agent Skills - Claude Docs](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)
+Agent Skills官方文档：[Overview - Agent Skills](https://agentskills.io/home)
+Anthropic Skills官方文档阅读文档：[Agent Skills - Claude Docs](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)
 Claude官方skills仓库：[anthropics/skills](https://github.com/anthropics/skills)、[claude-cookbooks/skills](https://github.com/anthropics/claude-cookbooks/blob/main/skills/notebooks/01_skills_introduction.ipynb)
 Claude skills精选：[awesome-claude-skills](https://github.com/BehiSecc/awesome-claude-skills)
 生成skills工具：[yusufkaraaslan/Skill_Seekers](https://github.com/yusufkaraaslan/Skill_Seekers) 将文档网站、GitHub 仓库和 PDF 文件转换为可投入生产的 Claude AI Skills
